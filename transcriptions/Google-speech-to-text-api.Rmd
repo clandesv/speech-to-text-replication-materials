@@ -1,0 +1,84 @@
+---
+title: "Transcription with google api"
+date: "12 1 2023"
+output: html_document
+---
+
+## Transcription with Google's Speech-to-Text API
+
+
+### Load libraries
+
+```{r}
+library(googleLanguageR)
+library(googleCloudStorageR)
+library(stringr)
+```
+
+### Authentication (through service account's JSON key file)
+
+```{r eval=F}
+googleLanguageR::gl_auth("path-to-json")
+```
+
+### 3. Retrieve data from Google Cloud Storage
+
+```{r eval=F}
+# Use the 'gcs_get_bucket' function to get information about a specific bucket.
+# Replace "bucket-name" with the actual name of the bucket you want to retrieve information for.
+googleCloudStorageR::gcs_get_bucket("bucket-name")
+
+# Use the 'gcs_list_objects' function to list objects (files) in the specified bucket.
+objects <- gcs_list_objects("bucket-name")
+
+# Subset the list of objects to include only objects from index 2 to 2402 (1-based indexing).
+objects<-objects[2:2403,]
+```
+
+### API Call
+
+#### Preparing the Call
+
+```{r eval=F}
+# Create strings containing gsutil-URIs to retrieve files from the Cloud (trustme-audio + ID).
+files <- objects$name
+path = paste("gs-path", files, sep='') # Adjust to the server path as needed
+
+# Create strings containing error messages.
+e <- "<simpleError: API returned: sample_rate_hertz (48000) in RecognitionConfig must either be omitted or match the value in the WAV header (16000).>"
+e1 <- "<simpleError: API returned: sample_rate_hertz (16000) in RecognitionConfig must either be omitted or match the value in the WAV header (8000).>"
+e2 <- "simpleError: API returned: sample_rate_hertz (8000) in RecognitionConfig must either be omitted or match the value in the WAV header (44100).>"
+
+# Write a function to transcribe speech to text and adapt sampleRateHertz accordingly.
+parse_answers <- function(x) {
+  out <- tryCatch(gl_speech(x, languageCode = "en-US", sampleRateHertz = 48000L),
+    error = function(e) {gl_speech(x, languageCode = "en-US", sampleRateHertz = 16000L)},
+    error = function(e1) {gl_speech(x, languageCode = "en-US", sampleRateHertz = 8000L)},
+    error = function(e2) {gl_speech(x, languageCode = "en-US", sampleRateHertz = 44100L)})
+    return(out)
+}
+```
+
+#### API Call
+
+```{r eval=F}
+# Create an empty list to later store the API call results.
+library(purrr)
+#audio_list <- list() 
+audio_list<-vector(mode="list",length= 2402) %>% set_names(files)
+```
+
+```{r eval=F}
+# Loop through the 'path' vector (server path) and call the 'parse_answers' function.
+for (i in 1:length(path)) { #path=serverpath
+audio_list[[i]] <- parse_answers(path[i])
+# You can set names if needed with: names(audio_list) <- paste0("W", seq_along(W))
+}
+```
+
+#### Store results from API Call
+
+```{r eval=F}
+save.image('./transcription-google-api.RData')
+```
+
