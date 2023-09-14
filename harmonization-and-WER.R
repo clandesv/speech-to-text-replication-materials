@@ -287,16 +287,26 @@ Avg_Wer <- Avg_Wer %>%
 
 # plot WERs
 
-Avg_Wer %>%
+wer_plot <- Avg_Wer %>%
   mutate(Names_ASR_systems = reorder(Names_ASR_systems, -Avg_WER)) %>%
   ggplot(., aes(x = reorder(Names_ASR_systems, -Avg_WER), y = Avg_WER, fill = Names_ASR_systems)) + 
   geom_bar(stat = "identity", width = 0.5) + 
-  geom_text(label = paste0(Avg_Wer$Avg_WER*100, "%"), vjust = -1) +
+  geom_text(label = paste0(Avg_Wer$Avg_WER*100, "%"), vjust = -1, size=4, color = "black") +
   scale_y_continuous(labels=scales::percent, limits = c(0, 0.25), breaks = c(0, 0.025, 0.05, 0.075, 0.1, 0.125, 0.15, 0.175, 0.2, 0.225, 0.25)) +
   ylab("Average WER") +
   xlab("ASR systems") + 
   theme_minimal() +
-  theme(legend.position = "none") 
+  theme(
+    legend.position = "none",
+    axis.text.x = element_text(angle = 45, hjust = 1)  # Rotate x-axis labels
+  )
+
+wer_plot
+
+# Export the plot in high-quality PNG format
+ggsave("wer_plot.png", wer_plot, width = 8, height = 5, dpi = 300)
+
+
 
 
 
