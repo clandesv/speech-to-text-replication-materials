@@ -10,7 +10,7 @@ Explore this repository for replication materials for our research paper titled 
 
 With the increasing frequency of surveys being conducted via smartphones and tablets, the option of audio responses for providing open-ended responses has become more popular in research. This approach aims to improve the user experience of respondents and the quality of their answers. To circumvent the tedious task of transcribing each audio recording for analysis most previous studies have used the Google Cloud Automatic Speech Recognition (ASR) service to convert audio data to text without exploring other ASR systems. Extending previous research, we benchmark the Google Cloud ASR service with state-of-the-art ASR systems from Meta (wav2vec 2.0), Nvidia (NeMo), and OpenAI (Whisper). To do so, we use 100 randomly selected and recorded open-ended responses to popular social science survey questions. Additionally, we provide a basic, easy-to-understand introduction on how the Whisper ASR system works as well as code for implementation. By comparing Word Error Rates, we show that for our data the Google Cloud ASR service is outperformed by almost all ASR systems, highlighting the need to also consider other ASR systems.
 
-The paper can be found here: https://docs.google.com/document/d/1bSGFUSpyonmQNd_QB3ybvHdL06Xz0K4ydXloTMVhPnI
+The paper can be found on OSF.
 
 
 ---
