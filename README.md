@@ -1,6 +1,6 @@
-# From Voice to Words: Speech-to-Text Algorithms for Open-Ended Survey Data
+# Comparing Speech-to-Text Algorithms for Transcribing Voice Data from Surveys
 
-Explore this repository for replication materials for our research paper titled "From Voice to Words: Speech-to-Text Algorithms for Open-Ended Survey Data"
+Explore this repository for replication materials for our research paper titled "Comparing Speech-to-Text Algorithms for Transcribing Voice Data from Surveys"
 
 
 
