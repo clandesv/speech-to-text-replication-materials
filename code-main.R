@@ -14,41 +14,8 @@ pacman::p_load(tidyverse,
                ggplot2)
 
 
+### Import data that contains all machine generated data as well as the human generated version
 
-### Prepare Data ----
-# 1. Import human generated transcripts from (Gdrive) ----
-# 2. Import machine generated transcripts (local) ----
-# 3. Merge human and machine generated transcripts
-
-# 1. ----
-# note: update local copy of this file when we made changes on gdrive!!
-#human_transcripts <- readxl::read_excel("./human-transcripts-agreementCoder1+2+3.xlsx")
-
-# 2. ----
-# machine_transcripts <-
-#   read.csv("../2022_work-life-politics/main study/Paper Text-Audio/Submission 1 (SRM)/data/data_long.csv") %>%
-#   filter(condition == "audio") %>%
-#   select(
-#     c(
-#       "ID_participant_long",
-#       "transcript_wav2vec_base",
-#       "transcript_wav2vec_large",
-#       "transcript_google",
-#       "transcript_whisper",
-#       "transcript_whisper_medium",
-#       "transcript_nvidia_xxlarge"
-#     )
-#   )
-
-
-# 3. ----
-#transcripts_human_machine <- merge(human_transcripts[,c(1,14)], machine_transcripts, by="ID_participant_long", all.x=TRUE)
-
-# remove row 45 since transcriber could not infer what was said in the audio file
-# transcripts_human_machine <- transcripts_human_machine %>%
-#   filter(ID_participant_long != "life_satisfaction_5e7146ee69a3f1061774803b")
-
-#write_csv(transcripts_human_machine, "../2022_work-life-politics/main study/Paper Text-Audio/Submission 1 (SRM)/data/transcripts/transcript-data.csv")
 transcripts_human_machine <- read.csv("./transcript-data.csv")
 
 
@@ -215,24 +182,8 @@ transcripts_human_machine$transcript_nvidia_xxlarge_harm         <- gsub("\\s+",
 
 ### Analysis ----
 
-
-
-# visualize differences in transcriptions
-diffChr(transcripts_human_machine$transcript_coder1_coder2_coder3_harm, transcripts_human_machine$transcript_wav2vec_base_harm)
-diffChr(transcripts_human_machine$transcript_coder1_coder2_coder3_harm, transcripts_human_machine$transcript_wav2vec_large_harm)
-diffChr(transcripts_human_machine$transcript_coder1_coder2_coder3_harm, transcripts_human_machine$transcript_google_harm)
-diffChr(transcripts_human_machine$transcript_coder1_coder2_coder3_harm, transcripts_human_machine$transcript_whisper_medium_harm)
-diffChr(transcripts_human_machine$transcript_coder1_coder2_coder3_harm, transcripts_human_machine$transcript_whisper_large_harm)
-diffChr(transcripts_human_machine$transcript_coder1_coder2_coder3_harm, transcripts_human_machine$transcript_nvidia_xxlarge_harm)
-
-
-
-
-# raw comparison of whisper medium & whisper large
-#diffChr(transcripts_human_machine$transcript_whisper_medium, transcripts_human_machine$transcript_whisper_large)
-
 # calculate WER (word error rate)
-reference_corpus = corpus(transcripts_human_machine$transcript_coder1_coder2_coder3_harm, remove = is.na(transcripts_human_machine$transcript_coder1_coder2_coder3_harm))
+reference_corpus = corpus(transcripts_human_machine$transcript_coder1_coder2_coder3_harm)
 
 hypothesis_corpus_wav2vec_base    = corpus(transcripts_human_machine$transcript_wav2vec_base_harm)
 hypothesis_corpus_wav2vec_large   = corpus(transcripts_human_machine$transcript_wav2vec_large_harm)
@@ -287,7 +238,7 @@ Avg_Wer <- Avg_Wer %>%
 
 # plot WERs
 
-wer_plot <- Avg_Wer %>%
+Avg_Wer %>%
   mutate(Names_ASR_systems = reorder(Names_ASR_systems, -Avg_WER)) %>%
   ggplot(., aes(x = reorder(Names_ASR_systems, -Avg_WER), y = Avg_WER, fill = Names_ASR_systems)) + 
   geom_bar(stat = "identity", width = 0.5) + 
@@ -301,34 +252,3 @@ wer_plot <- Avg_Wer %>%
     axis.text.x = element_text(angle = 45, hjust = 1)  # Rotate x-axis labels
   )
 
-wer_plot
-
-# Export the plot in high-quality PNG format
-ggsave("wer_plot.png", wer_plot, width = 8, height = 5, dpi = 300)
-
-
-
-
-
-#setwd("../2022_work-life-politics/main study/Paper Text-Audio/Submission 1 (SRM)/data/transcripts")
-# 
-# write.xlsx(Avg_Wer, file = "WER_of_transcripts.xlsx",
-#            sheetName = "Comparison Avg. WER", append = FALSE)
-# 
-# write.xlsx(Wer_wav2vec_base, file = "WER_of_transcripts.xlsx",
-#            sheetName = "Manually vs. Wav2vec (base-960h)", append = TRUE)
-# 
-# write.xlsx(Wer_wav2vec_large, file = "WER_of_transcripts.xlsx",
-#            sheetName = "Manually vs. Wav2vec (large-960h-lv60-self)", append = TRUE)
-# 
-# write.xlsx(Wer_Google, file = "WER_of_transcripts.xlsx",
-#            sheetName = "Manually vs. Google", append = TRUE)
-# 
-# write.xlsx(Wer_Whisper_medium, file = "WER_of_transcripts.xlsx",
-#            sheetName = "Manually vs. Whisper (medium)", append = TRUE)
-# 
-# write.xlsx(Wer_Whisper_large, file = "WER_of_transcripts.xlsx",
-#            sheetName = "Manually vs. Whisper (large)", append = TRUE)
-# 
-# write.xlsx(Wer_Nvidia_xxlarge, file = "WER_of_transcripts.xlsx",
-#            sheetName = "Manually vs. Nvidia NeMo (xxlarge)", append = TRUE)

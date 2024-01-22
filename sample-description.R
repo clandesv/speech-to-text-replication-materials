@@ -1,27 +1,5 @@
-### Setup ----
-library("tidyverse")
+### Import data ----
 
-# Import sample data ----
-# sample_data <-
-#   read.csv("../2022_work-life-politics/main study/Paper Text-Audio/Submission 1 (SRM)/data/data_long.csv") %>%
-#   filter(condition == "audio") %>%
-#   select(
-#     ID_participant,
-#     ID_participant_long,
-#     sex.prolific,
-#     age,
-#     education_covariate,
-#     survey_eval_difficulty
-#   )
-
-#n_audio_participants <- length(unique(sample_data$ID_participant)) #661
- 
-#n_audio_participants <- 661
- 
-#write_csv(sample_data, "./sample-data.csv")
-
-
-# Start of Analysis ----
 sample_data <- read_csv("./sample-data.csv")
 
 # Metrics that we report in the paper
