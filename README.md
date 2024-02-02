@@ -2,6 +2,19 @@
 
 Explore this repository for replication materials for our research paper titled "Comparing Speech-to-Text Algorithms for Transcribing Voice Data from Surveys"
 
+## This Repository
+
+This repository contains different instances of files which enable to replicate the results, figures and plots displayed in the research paper.
+
+### Figures
+The jupyter file "infographs-paper.ipynb" loads the wave-file "Test_diar_1m.wav" to create the first three figures in the paper (Figure 1-3). The first visualizes the waveform of an audiofile. Figure 2 displays the waveform and time ranges (frames). The third Figure creates a Mel Spectrogram.
+
+### Plot
+The barplot (Figure 4) displaying the Word-Error-Rates by ASR System as well as the average Word-Error-Rates in section "Results" is created by "code-main.R" file. The corresponding dataset in csv-format used here is called "transcript-data.csv".
+
+### Sample Description
+The sample is described in section "Data" with additional information (age, educational level and difficulty of survey). The corresponding mean and standard deviation values are calculated in "sample-description.R" by loading the csv-formatted dataset "sample-description-data.csv".
+
 
 
 ---

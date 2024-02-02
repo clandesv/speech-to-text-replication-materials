@@ -1,6 +1,6 @@
 ### Import data ----
-
-sample_data <- read_csv("./sample-data.csv")
+library(tidyverse)
+sample_data <- read_csv("./sample-description-data.csv")
 
 # Metrics that we report in the paper
 
@@ -18,3 +18,4 @@ sd(sample_data$education_covariate, na.rm=T)
 #completing the survey was, on average, "Rather easy"
 mean(sample_data$survey_eval_difficulty, na.rm=T)
 sd(sample_data$survey_eval_difficulty, na.rm=T)
+
