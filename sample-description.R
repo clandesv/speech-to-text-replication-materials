@@ -5,7 +5,7 @@ sample_data <- read_csv("./sample-description-data.csv")
 # Metrics that we report in the paper
 
 #final sample size of audio respondents
-n_audio_participants
+length(unique(sample_data$ID_participant))
 
 #age
 mean(sample_data$age, na.rm=T)

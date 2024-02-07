@@ -6,4 +6,4 @@ It's important to note that you'll typically want to associate each transcript w
 
 By following this approach, you'll have a structured dataset that maintains the association between transcripts and their respective audio files, making it easier to analyze and utilize the transcriptions in your data science and computational projects.
 
-Let us know if you have any questions or need further assistance with using the ASR algorithms and organizing the transcriptions effectively. Happy transcribing! 🎧📝
+Let us know if you have any questions or need further assistance with using the ASR algorithms and organizing the transcriptions effectively. 🎧📝
