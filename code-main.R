@@ -21,47 +21,40 @@ transcripts_human_machine <- read.csv("./transcript-data.csv")
 
 ### Harmonization ----
 
-# replace all ´ with ' in transcript_coder1_coder2_coder3
-transcripts_human_machine$transcript_coder1_coder2_coder3  <- str_replace_all(transcripts_human_machine$transcript_coder1_coder2_coder3, "´", "'")
+# write a function that completes all other preprocessing steps
 
-# remove punctuation except for apostrophes 
-transcripts_human_machine$transcript_coder1_coder2_coder3_harm   <- gsub("[^[:alnum:]['-]", " ", transcripts_human_machine$transcript_coder1_coder2_coder3)
-transcripts_human_machine$transcript_wav2vec_base_harm           <- gsub("[^[:alnum:]['-]", " ", transcripts_human_machine$transcript_wav2vec_base)
-transcripts_human_machine$transcript_wav2vec_large_harm          <- gsub("[^[:alnum:]['-]", " ", transcripts_human_machine$transcript_wav2vec_large)
-transcripts_human_machine$transcript_google_harm                 <- gsub("[^[:alnum:]['-]", " ", transcripts_human_machine$transcript_google)
-transcripts_human_machine$transcript_whisper_medium_harm         <- gsub("[^[:alnum:]['-]", " ", transcripts_human_machine$transcript_whisper_medium)
-transcripts_human_machine$transcript_whisper_large_harm          <- gsub("[^[:alnum:]['-]", " ", transcripts_human_machine$transcript_whisper)
-transcripts_human_machine$transcript_nvidia_xxlarge_harm         <- gsub("[^[:alnum:]['-]", " ", transcripts_human_machine$transcript_nvidia_xxlarge)
+harmonization <- function(x) {
+  x <- x %>%
+    # replace all ´ with '
+    str_replace_all(., "´", "'") %>% 
+    # remove punctuation except for apostrophes
+    gsub("[^[:alnum:]['-]", " ", .) %>% 
+    # remove whitespace at the beginning/ending and replace middle whitespaces with a single space
+    str_squish(.) %>% 
+    # convert all strings to lowercase  
+    tolower(.) %>% 
+    # replaces numeric represented numbers with words
+    replace_number(.) %>% 
+    # remove multiple whitespaces 
+    gsub("\\s+"," ", .)
+  return(x)
+}
 
-# remove whitespace at the beginning or ending of a sentence, and all internal whitespaces with a single space 
-transcripts_human_machine$transcript_coder1_coder2_coder3_harm   <- str_squish(transcripts_human_machine$transcript_coder1_coder2_coder3_harm)
-transcripts_human_machine$transcript_wav2vec_base_harm           <- str_squish(transcripts_human_machine$transcript_wav2vec_base_harm)
-transcripts_human_machine$transcript_wav2vec_large_harm          <- str_squish(transcripts_human_machine$transcript_wav2vec_large_harm)
-transcripts_human_machine$transcript_google_harm                 <- str_squish(transcripts_human_machine$transcript_google_harm)
-transcripts_human_machine$transcript_whisper_medium_harm         <- str_squish(transcripts_human_machine$transcript_whisper_medium_harm)
-transcripts_human_machine$transcript_whisper_large_harm          <- str_squish(transcripts_human_machine$transcript_whisper_large_harm)
-transcripts_human_machine$transcript_nvidia_xxlarge_harm         <- str_squish(transcripts_human_machine$transcript_nvidia_xxlarge_harm)
+# apply function to all columns with transcripts
+# create new column with ending "_harm"
 
+transcripts_human_machine <- transcripts_human_machine %>%
+  mutate(
+    transcript_coder1_coder2_coder3_harm = harmonization(transcript_coder1_coder2_coder3),
+    transcript_wav2vec_base_harm = harmonization(transcript_wav2vec_base),
+    transcript_wav2vec_large_harm = harmonization(transcript_wav2vec_large),
+    transcript_google_harm = harmonization(transcript_google),
+    transcript_whisper_medium_harm = harmonization(transcript_whisper_medium),
+    transcript_whisper_large_harm = harmonization(transcript_whisper),
+    transcript_nvidia_xxlarge_harm  = harmonization(transcript_nvidia_xxlarge)
+  )
 
-# convert all strings to lowercase 
-transcripts_human_machine$transcript_coder1_coder2_coder3_harm   <- tolower(transcripts_human_machine$transcript_coder1_coder2_coder3_harm)
-transcripts_human_machine$transcript_wav2vec_base_harm           <- tolower(transcripts_human_machine$transcript_wav2vec_base_harm)
-transcripts_human_machine$transcript_wav2vec_large_harm          <- tolower(transcripts_human_machine$transcript_wav2vec_large_harm)
-transcripts_human_machine$transcript_google_harm                 <- tolower(transcripts_human_machine$transcript_google_harm)
-transcripts_human_machine$transcript_whisper_medium_harm         <- tolower(transcripts_human_machine$transcript_whisper_medium_harm)
-transcripts_human_machine$transcript_whisper_large_harm          <- tolower(transcripts_human_machine$transcript_whisper_large_harm)
-transcripts_human_machine$transcript_nvidia_xxlarge_harm         <- tolower(transcripts_human_machine$transcript_nvidia_xxlarge_harm)
-
-# replaces numeric represented numbers with words
-transcripts_human_machine$transcript_coder1_coder2_coder3_harm   <- replace_number(transcripts_human_machine$transcript_coder1_coder2_coder3_harm)
-transcripts_human_machine$transcript_wav2vec_base_harm           <- replace_number(transcripts_human_machine$transcript_wav2vec_base_harm)
-transcripts_human_machine$transcript_wav2vec_large_harm          <- replace_number(transcripts_human_machine$transcript_wav2vec_large_harm)
-transcripts_human_machine$transcript_google_harm                 <- replace_number(transcripts_human_machine$transcript_google_harm)
-transcripts_human_machine$transcript_whisper_medium_harm         <- replace_number(transcripts_human_machine$transcript_whisper_medium_harm)
-transcripts_human_machine$transcript_whisper_large_harm          <- replace_number(transcripts_human_machine$transcript_whisper_large_harm)
-transcripts_human_machine$transcript_nvidia_xxlarge_harm         <- replace_number(transcripts_human_machine$transcript_nvidia_xxlarge_harm)
-
-
+# define slang words and their replacement
 
 find <- c("-"                 ,
           "\\<gonna\\>"       ,
@@ -165,18 +158,6 @@ for (i in 9:15){
   
   }
 }
-
-
-# remove multiple whitespaces 
-transcripts_human_machine$transcript_coder1_coder2_coder3_harm   <- gsub("\\s+"," ", transcripts_human_machine$transcript_coder1_coder2_coder3_harm )
-transcripts_human_machine$transcript_wav2vec_base_harm           <- gsub("\\s+"," ", transcripts_human_machine$transcript_wav2vec_base_harm  )
-transcripts_human_machine$transcript_wav2vec_large_harm          <- gsub("\\s+"," ", transcripts_human_machine$transcript_wav2vec_large_harm )
-transcripts_human_machine$transcript_google_harm                 <- gsub("\\s+"," ", transcripts_human_machine$transcript_google_harm        )
-transcripts_human_machine$transcript_whisper_medium_harm         <- gsub("\\s+"," ", transcripts_human_machine$transcript_whisper_medium_harm)
-transcripts_human_machine$transcript_whisper_large_harm          <- gsub("\\s+"," ", transcripts_human_machine$transcript_whisper_large_harm )
-transcripts_human_machine$transcript_nvidia_xxlarge_harm         <- gsub("\\s+"," ", transcripts_human_machine$transcript_nvidia_xxlarge_harm)
-
-
 
 
 
